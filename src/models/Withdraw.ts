@@ -14,4 +14,4 @@ export interface Withdraw {
   updatedAt: Date;
 }
 
-type WithdrawStatus = "Pending" | "Paid";
+export type WithdrawStatus = "Pending" | "Paid";

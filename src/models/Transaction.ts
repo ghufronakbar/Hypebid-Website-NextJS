@@ -16,7 +16,7 @@ export interface Transaction {
   updatedAt: Date;
 }
 
-type TransactionStatus =
+export type TransactionStatus =
   | "Pending"
   | "Paid"
   | "Delivered"

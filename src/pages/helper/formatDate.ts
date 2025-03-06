@@ -1,6 +1,7 @@
 export const formatDate = (
   dateInput?: string | Date,
-  isFullDate = false
+  isFullDate = false,
+  isWithTime = false
 ): string => {
   const listMonth = [
     "January",
@@ -31,6 +32,9 @@ export const formatDate = (
   const month = date.getMonth();
   const monthName = listMonth[month];
 
+  if (isWithTime) {
+    return `${date.getDate()} ${monthName}, ${year} ${date.getHours()}:${date.getMinutes()}`;
+  }
   if (isFullDate) {
     return `${date.getDate()} ${monthName}, ${year}`;
   } else {

@@ -9,6 +9,7 @@ import {
   MdPeople,
   MdShop,
 } from "react-icons/md";
+import { useRouter } from "next/router";
 
 interface NavItem {
   name: string;
@@ -17,12 +18,12 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: "Dashboard", href: "/dashboard", icon: <MdDashboard /> },
-  { name: "Auction", href: "/auction", icon: <MdShop /> },
-  { name: "User", href: "/user", icon: <MdPeople /> },
-  { name: "Transaction", href: "/transaction", icon: <MdHistory /> },
-  { name: "Withdrawal", href: "/withdrawal", icon: <MdCurrencyExchange /> },
-  { name: "Logout", href: "/logout", icon: <MdLogout /> },
+  { name: "Dashboard", href: "dashboard", icon: <MdDashboard /> },
+  { name: "Auction", href: "auction", icon: <MdShop /> },
+  { name: "User", href: "user", icon: <MdPeople /> },
+  { name: "Transaction", href: "transaction", icon: <MdHistory /> },
+  { name: "Withdrawal", href: "withdrawal", icon: <MdCurrencyExchange /> },
+  { name: "Logout", href: "logout", icon: <MdLogout /> },
 ];
 
 interface Props {
@@ -34,6 +35,8 @@ interface Props {
 const DashboardLayout = ({ children, title, childredHeader }: Props) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const router = useRouter()
+  
 
   return (
     <div className="flex min-h-screen">
@@ -62,8 +65,8 @@ const DashboardLayout = ({ children, title, childredHeader }: Props) => {
             .map((item) => (
               <Link
                 key={item.name}
-                href={item.href}
-                className="text-white hover:bg-white hover:text-blue-500 px-4 py-2 rounded-md font-semibold ease-in-out duration-300 flex flex-row gap-2 items-center"
+                href={`/${item.href}`}
+                className={`${router.asPath.split("/")[1] === item.href ? "bg-white text-blue-500" : "text-white"}  hover:bg-white hover:text-blue-500 px-4 py-2 rounded-md font-semibold ease-in-out duration-300 flex flex-row gap-2 items-center`}
               >
                 {item.icon}
                 {item.name}
@@ -78,15 +81,15 @@ const DashboardLayout = ({ children, title, childredHeader }: Props) => {
             <div className="flex flex-row items-center gap-2 w-full">
               <Image
                 src="/images/logo.png"
-                width={40}
-                height={40}
-                className="w-16 h-16"
+                width={400}
+                height={400}
+                className="w-20 h-16 object-cover"
                 alt=""
               />
             </div>
 
             <button
-              className="text-white"
+              className="text-white cursor-pointer"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <svg
@@ -113,7 +116,7 @@ const DashboardLayout = ({ children, title, childredHeader }: Props) => {
               {navItems.map((item) => (
                 <Link
                   key={item.name}
-                  href={item.href}
+                  href={`/${item.href}`}
                   className="text-white hover:bg-white hover:text-blue-500 px-4 py-2 rounded-md font-semibold ease-in-out duration-300 mx-2 my-1"
                 >
                   {item.name}

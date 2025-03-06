@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "~/components/layout/DashboardLayout";
-import { Auction, AuctionStatus } from "~/models/Auction";
 import AuthPage from "~/utils/AuthPage";
 import axiosInstance from "./config/axiosInstance";
 import { ResponseSuccess } from "~/models/Response";
 import Image from "next/image";
 import { formatDate } from "./helper/formatDate";
-import Link from "next/link";
+import { Withdraw, WithdrawStatus } from "~/models/Withdraw";
+import { formatRupiah } from "./helper/formatRupiah";
+import { makeToast } from "~/utils/makeToast";
 
-const AuctionPage = () => {
-  const { data, getColorStatus } = useAuctions();
+const WithdrawPage = () => {
+  const { data, getColorStatus, setAsPaid } = useWithdraws();
 
   return (
-    <DashboardLayout title="Auction">
+    <DashboardLayout title="Withdrawal">
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -22,16 +23,19 @@ const AuctionPage = () => {
               </th>
               <th scope="col" className="px-6 py-3"></th>
               <th scope="col" className="px-6 py-3">
-                Name
+                Buyer
               </th>
               <th scope="col" className="px-6 py-3">
-                Category
+                Bank Account
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Amount
               </th>
               <th scope="col" className="px-6 py-3">
                 Status
               </th>
               <th scope="col" className="px-6 py-3">
-                Posted By
+                Created At
               </th>
               <th scope="col" className="px-6 py-3"></th>
             </tr>
@@ -42,7 +46,7 @@ const AuctionPage = () => {
                 <td className="px-6 py-4">{index + 1}</td>
                 <td className="px-6 py-4">
                   <Image
-                    src={item.images[0] || "/images/placeholder.jpg"}
+                    src={item.user?.image || "/images/profile.png"}
                     alt=""
                     width={400}
                     height={400}
@@ -53,13 +57,22 @@ const AuctionPage = () => {
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                 >
-                  {item.name}
+                  {item.user.name}
                 </th>
                 <th
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                 >
-                  {item.category}
+                  <div className="flex flex-col">
+                    <div className="font-semibold">{item.bank}</div>
+                    <div>{item.account}</div>
+                  </div>
+                </th>
+                <th
+                  scope="row"
+                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                >
+                  {formatRupiah(item.amount)}
                 </th>
                 <td className="px-6 py-4">
                   <div
@@ -71,17 +84,17 @@ const AuctionPage = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="max-w-20">
-                  {item.seller.name} at {formatDate(item.createdAt, true)}
-                  </div>
+                  {formatDate(item.createdAt, true, true)}
                 </td>
                 <td className="px-6 py-4">
-                  <Link
-                    href={`/auction/${item.id}`}
-                    className="text-blue-500 hover:underline font-semibold"
-                  >
-                    Detail
-                  </Link>
+                  {item.status === "Pending" && (
+                    <button
+                      className="bg-blue-500 text-white rounded-lg px-2 py-1 cursor-pointer"
+                      onClick={() => setAsPaid(item.id)}
+                    >
+                      Mark as Paid
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -92,12 +105,13 @@ const AuctionPage = () => {
   );
 };
 
-const useAuctions = () => {
-  const [data, setData] = useState<Auction[]>([]);
+const useWithdraws = () => {
+  const [data, setData] = useState<Withdraw[]>([]);
+  const [pendingPaid, setPendingPaid] = useState<boolean>(false);
 
   const fetchData = async () => {
-    const res = await axiosInstance.get<ResponseSuccess<Auction[]>>(
-      "/auctions"
+    const res = await axiosInstance.get<ResponseSuccess<Withdraw[]>>(
+      "/withdraws"
     );
     setData(res.data.data);
   };
@@ -105,20 +119,35 @@ const useAuctions = () => {
     fetchData();
   }, []);
 
-  const getColorStatus = (status: AuctionStatus): string => {
+  const getColorStatus = (status: WithdrawStatus): string => {
     switch (status) {
       case "Pending":
         return "bg-gray-500";
-      case "Accepted":
+      case "Paid":
         return "bg-green-500";
-      case "Rejected":
-        return "bg-red-500";
       default:
         return "bg-gray-500";
     }
   };
 
-  return { data, getColorStatus };
+  const setAsPaid = async (id: string) => {
+    try {
+      if (pendingPaid) return;
+      makeToast("info");
+      setPendingPaid(true);
+      const res = await axiosInstance.patch<ResponseSuccess<Withdraw>>(
+        `/withdraws/${id}`
+      );
+      await fetchData();
+      makeToast("success", res.data.message);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setPendingPaid(false);
+    }
+  };
+
+  return { data, getColorStatus, setAsPaid };
 };
 
-export default AuthPage(AuctionPage);
+export default AuthPage(WithdrawPage);
