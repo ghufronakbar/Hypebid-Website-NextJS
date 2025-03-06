@@ -41,3 +41,5 @@ export const formatDate = (
     return `${monthName} ${year}`;
   }
 };
+
+export default formatDate;

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Auction } from "~/models/Auction";
-import axiosInstance from "../config/axiosInstance";
+import axiosInstance from "../../config/axiosInstance";
 import { useRouter } from "next/router";
 import { ResponseSuccess } from "~/models/Response";
 import { AxiosError } from "axios";
 import DashboardLayout from "~/components/layout/DashboardLayout";
 import LoadingPage from "~/components/LoadingPage";
-import { formatDate } from "../helper/formatDate";
-import { formatRupiah } from "../helper/formatRupiah";
+import { formatDate } from "../../helper/formatDate";
+import { formatRupiah } from "../../helper/formatRupiah";
 import Image from "next/image";
 import { makeToast } from "~/utils/makeToast";
 import { FiExternalLink } from "react-icons/fi";

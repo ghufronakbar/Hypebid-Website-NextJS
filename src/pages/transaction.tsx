@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "~/components/layout/DashboardLayout";
 import AuthPage from "~/utils/AuthPage";
-import axiosInstance from "./config/axiosInstance";
+import axiosInstance from "../config/axiosInstance";
 import { ResponseSuccess } from "~/models/Response";
 import Image from "next/image";
 import Link from "next/link";
-import { formatDate } from "./helper/formatDate";
+import { formatDate } from "../helper/formatDate";
 import { Transaction, TransactionStatus } from "~/models/Transaction";
 
 const TransactionPage = () => {

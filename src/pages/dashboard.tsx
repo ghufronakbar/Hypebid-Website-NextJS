@@ -4,7 +4,7 @@ import { Auction } from "~/models/Auction";
 import { User } from "~/models/User";
 import { Withdraw } from "~/models/Withdraw";
 import AuthPage from "~/utils/AuthPage";
-import axiosInstance from "./config/axiosInstance";
+import axiosInstance from "../config/axiosInstance";
 import { ResponseSuccess } from "~/models/Response";
 import {
   MdCurrencyExchange,
@@ -14,7 +14,7 @@ import {
   MdPendingActions,
   MdPerson,
 } from "react-icons/md";
-import { formatRupiah } from "./helper/formatRupiah";
+import { formatRupiah } from "../helper/formatRupiah";
 
 const DashboardPage = () => {
   const {

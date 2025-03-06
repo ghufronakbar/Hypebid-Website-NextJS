@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
-import axiosInstance from "./config/axiosInstance";
+import axiosInstance from "../config/axiosInstance";
 import { ResponseSuccess } from "~/models/Response";
 import Cookies from "js-cookie";
 import { makeToast } from "~/utils/makeToast";
